@@ -1,21 +1,58 @@
 using System;
 
-class Program
+namespace JournalApp
 {
-    static void Main(string[] args)
+    class Program
     {
-        // Creating job instances
-        Job job1 = new Job("Software Engineer", "Microsoft", 2019, 2022);
-        Job job2 = new Job("Manager", "Apple", 2022, 2023);
+        static void Main(string[] args)
+        {
+            Journal journal = new Journal();
 
-        // Creating a Resume instance
-        Resume myResume = new Resume("Anyalechi chidiebere");
+            while (true)
+            {
+                // Menu
+                Console.WriteLine("\n--- Journal Menu ---");
+                Console.WriteLine("1. Write a new entry");
+                Console.WriteLine("2. Display journal");
+                Console.WriteLine("3. Save journal to file");
+                Console.WriteLine("4. Load journal from file");
+                Console.WriteLine("5. Exit");
+                Console.Write("Please select an option (1-5): ");
+                string choice = Console.ReadLine();
 
-        // Adding jobs to the resume
-        myResume.AddJob(job1);
-        myResume.AddJob(job2);
-
-        // Displaying the resume
-        myResume.DisplayResume();
+                if (choice == "1")
+                {
+                    Console.Write("What is your response? ");
+                    string response = Console.ReadLine();
+                    journal.AddEntry(response);
+                    Console.WriteLine("Entry added successfully.");
+                }
+                else if (choice == "2")
+                {
+                    journal.DisplayJournal();
+                }
+                else if (choice == "3")
+                {
+                    Console.Write("Enter the filename to save the journal: ");
+                    string filename = Console.ReadLine();
+                    journal.SaveToFile(filename);
+                }
+                else if (choice == "4")
+                {
+                    Console.Write("Enter the filename to load the journal from: ");
+                    string filename = Console.ReadLine();
+                    journal.LoadFromFile(filename);
+                }
+                else if (choice == "5")
+                {
+                    Console.WriteLine("Goodbye!");
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid choice. Please try again.");
+                }
+            }
+        }
     }
 }
