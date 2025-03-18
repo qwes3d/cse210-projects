@@ -2,8 +2,8 @@ using System;
 public class Fraction
 {
     // Attributes for the top (numerator) and bottom (denominator)
-    private int numerator;
-    private int denominator;
+    private int numerator; // top
+    private int denominator; // bottom
 
     // Constructor to initialize the numerator and denominator
     public Fraction(int numerator, int denominator)
@@ -12,8 +12,8 @@ public class Fraction
         {
             throw new ArgumentException("Denominator cannot be zero.");
         }
-        this.numerator = numerator;
-        this.denominator = denominator;
+        this.numerator = numerator; // top
+        this.denominator = denominator; // bottom
     }
 
     // Getters and Setters for numerator and denominator
