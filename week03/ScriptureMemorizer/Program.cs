@@ -4,76 +4,118 @@ using System.Linq;
 
 public class Word
 {
-    public string Text { get; set; }
-    public bool IsHidden { get; set; }
+    // Private member variables for encapsulation
+    private string _text;
+    private bool _isHidden;
 
-    // Constructor to initialize word
+    // Constructor to initialize word with encapsulated properties
     public Word(string text)
     {
-        Text = text;
-        IsHidden = false;
+        _text = text;
+        _isHidden = false;
     }
 
-    // Method to hide the word by setting underscores
+    // Public method to access the text
+    public string GetText()
+    {
+        return _text;
+    }
+
+    // Public method to access whether the word is hidden
+    public bool IsHidden()
+    {
+        return _isHidden;
+    }
+
+    // Public method to hide the word by setting underscores
     public string Hide()
     {
-        if (!IsHidden)
+        if (!_isHidden)
         {
-            IsHidden = true;
-            return new string('_', Text.Length);
+            _isHidden = true;
+            return new string('_', _text.Length);
         }
-        return Text; // If already hidden, just return the word as is
+        return _text; // If already hidden, just return the word as is
     }
+
+    // Optionally, you can provide a public method to set the word if needed, 
+    // but here we have encapsulated the field so it's not directly modified.
 }
 
 public class ScriptureReference
 {
-    public string Reference { get; set; }
-    public bool IsRange { get; set; }
+    // Private member variables for encapsulation
+    private string _reference;
+    private bool _isRange;
 
     // Constructor for a single verse
     public ScriptureReference(string reference)
     {
-        Reference = reference;
-        IsRange = false;
+        _reference = reference;
+        _isRange = false;
     }
 
     // Constructor for a range of verses (e.g., "Proverbs 3:5-6")
     public ScriptureReference(string startReference, string endReference)
     {
-        Reference = $"{startReference}-{endReference}";
-        IsRange = true;
+        _reference = $"{startReference}-{endReference}";
+        _isRange = true;
+    }
+
+    // Public method to access the reference
+    public string GetReference()
+    {
+        return _reference;
+    }
+
+    // Public method to check if the reference is a range
+    public bool IsRange()
+    {
+        return _isRange;
     }
 
     // Method to display the reference properly
     public override string ToString()
     {
-        return Reference;
+        return _reference;
     }
 }
 
 public class Scripture
 {
-    public ScriptureReference Reference { get; set; }
-    public List<Word> Words { get; set; }
+    // Private member variables for encapsulation
+    private ScriptureReference _reference;
+    private List<Word> _words;
 
     // Constructor for scripture with reference and text
     public Scripture(ScriptureReference reference, string text)
     {
-        Reference = reference;
-        Words = text.Split(new[] { ' ', ',', '.', ';', ':', '!', '?' }, StringSplitOptions.RemoveEmptyEntries)
+        _reference = reference;
+        _words = text.Split(new[] { ' ', ',', '.', ';', ':', '!', '?' }, StringSplitOptions.RemoveEmptyEntries)
                     .Select(w => new Word(w))
                     .ToList();
+    }
+
+    // Public method to get the reference of the scripture
+    public ScriptureReference GetReference()
+    {
+        return _reference;
+    }
+
+    // Public method to get the list of words in the scripture
+    public List<Word> GetWords()
+    {
+        return _words;
     }
 
     // Method to hide a random word
     public string HideRandomWord(List<Word> hiddenWords)
     {
         Random random = new Random();
-        string hiddenText = string.Join(" ", Words.Select(w => w.IsHidden ? new string('_', w.Text.Length) : w.Text));
+        string hiddenText = string.Join(" ", _words.Select(w => w.IsHidden() ? new string('_', w.GetText().Length) : w.GetText()));
 
         // If all words are hidden, return the scripture as is
-        if (Words.All(w => w.IsHidden))
+        if (_words.All(w => w.IsHidden()))
         {
             return hiddenText;
         }
@@ -82,14 +124,14 @@ public class Scripture
         Word wordToHide;
         do
         {
-            wordToHide = Words[random.Next(Words.Count)];
-        } while (wordToHide.IsHidden);
+            wordToHide = _words[random.Next(_words.Count)];
+        } while (wordToHide.IsHidden());
 
         // Hide the word and add it to the hidden words list
         wordToHide.Hide();
         hiddenWords.Add(wordToHide);
 
-        return string.Join(" ", Words.Select(w => w.IsHidden ? new string('_', w.Text.Length) : w.Text));
+        return string.Join(" ", _words.Select(w => w.IsHidden() ? new string('_', w.GetText().Length) : w.GetText()));
     }
 }
 
@@ -109,7 +151,7 @@ class Program
         {
             Console.Clear();
             // Display the current scripture reference and the current state of the text
-            Console.WriteLine($"Scripture: {scripture.Reference}");
+            Console.WriteLine($"Scripture: {scripture.GetReference()}");
             Console.WriteLine(scripture.HideRandomWord(hiddenWords)); // Show hidden words progressively
             Console.WriteLine("\nPress ENTER to hide a word or type 'quit' to end.");
 
@@ -125,10 +167,10 @@ class Program
                 scripture.HideRandomWord(hiddenWords);
 
                 // If all words are hidden, end the program
-                if (hiddenWords.Count == scripture.Words.Count)
+                if (hiddenWords.Count == scripture.GetWords().Count)
                 {
                     Console.Clear();
-                    Console.WriteLine($"Scripture: {scripture.Reference}");
+                    Console.WriteLine($"Scripture: {scripture.GetReference()}");
                     Console.WriteLine(scripture.HideRandomWord(hiddenWords));
                     Console.WriteLine("\nAll words are hidden. Press any key to exit.");
                     Console.ReadKey();
